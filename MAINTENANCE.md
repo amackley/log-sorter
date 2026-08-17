@@ -38,7 +38,7 @@ Confirm these settings, all under Parameter:
 |---|---|---|
 | Object Identification Mode | **`LGS (Light Grid Mode)`** | Anything else kills beam detection while leaving the height channels working |
 | Beam Mode | **`Three Beam Crossing`** | Halves the effective grid pitch to ~4.2 mm. **Changing this wipes every threshold** |
-| Detection Reference | `Reference Opposite Cable Side` | |
+| Detection Reference | **`Reference at Cable Side`** | Matches the **cable-down** mounting. See below |
 | Small Object Suppression | `0` | |
 | Switching Signal Polarity | `Not Inverted` | |
 | Height Control 1–8 Polarity | `Not Inverted` | |
@@ -85,11 +85,34 @@ Keep a set of reference blocks with the machine. **Update this table whenever th
 | HC4 | 6.0" | 142 | bench reference, not the belt |
 | HC5 | 7.0" | 167 | bench reference, not the belt |
 | HC6 | 7.5" | 179 | bench reference, not the belt |
-| HC7 | 9" | 221 | instrumentation only |
+| HC7 | 9" | 217 | instrumentation only |
 | HC8 | 12" | 296 | instrumentation only |
 
 HC7 and HC8 are not used by any sorting rule — the classifier saturates at the 7.5"+ band. They
 exist so that oversize material is visible in diagnostics.
+
+### The array is mounted cable-down
+
+The grid is inverted from the factory default so the cable exits at the bottom. The manufacturer
+supports this explicitly: the device ships configured for cable-outlet-upwards, and for
+cable-downwards installation the receiver is configured via IO-Link for the zero-point reference
+on the cable side.
+
+That is what `Detection Reference` = **`Reference at Cable Side`** does.
+
+> **The parameter and the physical orientation are a matched pair.** Change one without the
+> other and every height reads inverted — a small block reports a *large* position and lights
+> nearly every Height Control bit. If you ever see that, check this parameter before suspecting
+> the calibration.
+
+Only the receiver carries the setting; the emitter has no configuration. **Both units must be
+mounted the same way up** — with Beam Mode at `Three Beam Crossing`, mirroring one against the
+other breaks the crossing geometry rather than merely offsetting it.
+
+**`Lowest Object Position` reads about 8 mm** in this orientation rather than 0. The gap between
+the housing end and the first beam is not the same at both ends. **Do not compensate for it** —
+thresholds are written as measured values against a `reported ≥ Position` trigger, so the offset
+is already included and cancels out.
 
 ### Verifying
 
