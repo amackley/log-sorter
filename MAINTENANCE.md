@@ -109,19 +109,64 @@ condition is `reported ≥ Position`, so the measured value is exactly right. Se
 Keep a set of reference blocks with the machine. **Update this table whenever the values change
 — it is the only backup.**
 
-| Channel | Boundary | Position | Measured on |
-|---|---|---|---|
-| HC1 | 2.6" | 54 | bench reference, not the belt |
-| HC2 | 3.0" | 62 | bench reference, not the belt |
-| HC3 | 4.5" | 104 | bench reference, not the belt |
-| HC4 | 6.0" | 142 | bench reference, not the belt |
-| HC5 | 7.0" | 167 | bench reference, not the belt |
-| HC6 | 7.5" | 179 | bench reference, not the belt |
-| HC7 | 9" | 217 | instrumentation only |
-| HC8 | 12" | 296 | instrumentation only |
+Current values, measured 2026-08-17:
+
+| Channel | Boundary | Position |
+|---|---|---|
+| HC1 | 2.6" | **392** |
+| HC2 | 3.0" | **404** |
+| HC3 | 4.5" | **442** |
+| HC4 | 6.0" | **479** |
+| HC5 | 7.0" | **504** |
+| HC6 | 7.5" | **517** |
+| HC7 | 9" | **554** |
+| HC8 | 12" | **633** |
 
 HC7 and HC8 are not used by any sorting rule — the classifier saturates at the 7.5"+ band. They
 exist so that oversize material is visible in diagnostics.
+
+**Every threshold must sit inside the live strip, 355–698.** A threshold inside a blanked region
+can never fire, no matter what object is in the beam. If a channel refuses to trigger, check that
+before suspecting anything else.
+
+**Two gaps are tight.** HC1→HC2 is 12 mm and HC5→HC6 is 13 mm. That second one is the 7.0"/7.5"
+boundary, which separates two different product bins, so it is where a mounting error shows up
+first.
+
+These were measured against a marked belt line rather than the belt itself. **Re-check at least
+the 4.5" and 7.5" blocks against the real belt surface** — if they still read 442 and 517, the
+calibration carried over and nothing more is needed.
+
+### Part of the array is blanked out
+
+The grid is 800 mm but only about 14 in of it can see the belt — the rest looks at machine
+structure above and below the opening. Those two regions are **blanked**, so the sensor ignores
+them.
+
+| Field | Range | Covers |
+|---|---|---|
+| Blanking Field 1 | `0` – `355` | Below the window, including the belt surface |
+| Blanking Field 2 | `698` – `800` | Above the window |
+
+Both have a **Mode** setting, under Operation Mode Configuration → Blanking Field Configuration,
+and both must be **`Active`**. Like the Height Control channels, the positions do nothing while
+the Mode is Inactive.
+
+**Without blanking the machine would not work at all.** The obstructed beams would hold the
+switching signal on permanently and no log would ever be detected.
+
+Two consequences worth knowing before they confuse you:
+
+- **A Height Control threshold inside a blanked region can never fire.** It is not a fault in the
+  channel. Check the value is above 355.
+- **`Lowest Object Position` clamps at about 358** — the blanking edge — for every log, because
+  logs rest at 342.8, inside the blanked zone. **`Object Height` is therefore wrong for every
+  log**, running roughly 28 mm short. At 1 in steps that makes each block report about the size of
+  the one below it, which looks exactly like a stale reading and is not. **Use
+  `Highest Object Position` only.**
+
+Assume changing **Beam Mode wipes the blanking fields** as well as the thresholds. Set Beam Mode
+first, then blanking, then thresholds.
 
 ### The array is mounted cable-down
 
