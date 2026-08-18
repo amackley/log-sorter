@@ -16,8 +16,40 @@ this has been verified. The table at the end of this section is the only record.
 ### Tool
 
 **WAGO-I/O-CHECK.** This is licensed WAGO software (part number 759-302/000-923 or 759-920),
-available from WAGO. Connect to the controller at `192.168.1.3`, then Show Device on the 750-1657
-Port 1.
+available from WAGO.
+
+Getting to the sensor's own parameters takes three windows and the route is not obvious:
+
+1. **WAGO-I/O-CHECK** — connect to `192.168.1.3`.
+2. Select **`Pos. 02: 750-1657, 4-Port IO-Link Master`** in the Navigation tree.
+3. **`Settings ▾` → `For the selected module…`** — this is the step nobody guesses. It opens the
+   **WAGO IO-Link Tool**.
+4. In the IO-Link Tool: **Ports** page, select **Port 1**, press **Connect**.
+5. Press **`Show Device`**, next to the IODD filename. That opens **`IO-Link Device on Port1`**,
+   which holds the Parameter tree and the Upload / Download / Write Changes buttons.
+6. There: **Connect**, untick **`Read Process Data`**, then **Upload**.
+
+**All three windows stay open.** Neither tool does the whole job — I/O-CHECK owns the connection
+to the controller and the IO-Link master, the IO-Link Tool owns the sensor's own parameters.
+
+> **You are only really talking to the sensor once `Product` reads `LGS8-800-IO/110/115b`.**
+> Before that it shows a dash or description-file defaults, and every value on screen is
+> meaningless. Each window shows `Offline` or `Disconnected` bottom-left until connected.
+
+**Three things compete for the same channel and only one can have it:**
+
+| Contender | How to clear it |
+|---|---|
+| The control program | Physical **run/stop switch to STOP** |
+| I/O-CHECK's process data view | Close it; leave `Control-Mode (Direct)` off |
+| The IO-Link Tool's parameter channel | Untick **`Read Process Data`** before any write |
+
+That is what the `Read Process Data` rule is really about. It is not arbitrary — it is one of
+three claimants on one channel, and leaving any of them running during a write produces a
+timeout that reads like a permissions error and is not.
+
+`Control-Mode (Direct)` also lets I/O-CHECK drive the digital outputs directly, so leave it off
+unless you are deliberately testing the kicker relays.
 
 **The PLC must be stopped** — put the physical run/stop switch in STOP, so the control program
 releases the IO-Link port.
