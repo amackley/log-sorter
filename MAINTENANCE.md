@@ -79,7 +79,7 @@ Confirm these settings, all under Parameter:
 ### Measuring
 
 **Do not calculate the thresholds from inches.** The sensor under-reports object height by a
-non-constant amount — between roughly 7.6 and 14.2 mm depending on size. Every attempt to derive
+non-constant amount, currently 2 to 5 mm on this mounting. Every attempt to derive
 these numbers arithmetically has failed. Measuring works first time.
 
 For each reference block, resting on the belt surface:
@@ -109,63 +109,72 @@ condition is `reported ≥ Position`, so the measured value is exactly right. Se
 Keep a set of reference blocks with the machine. **Update this table whenever the values change
 — it is the only backup.**
 
-Current values, measured 2026-08-17:
+Current values, measured 2026-09-08 against the real belt:
 
 | Channel | Boundary | Position |
 |---|---|---|
-| HC1 | 2.6" | **392** |
-| HC2 | 3.0" | **404** |
-| HC3 | 4.5" | **442** |
-| HC4 | 6.0" | **479** |
-| HC5 | 7.0" | **504** |
-| HC6 | 7.5" | **517** |
-| HC7 | 9" | **554** |
-| HC8 | 12" | **633** |
+| HC1 | 2.6" | **504** |
+| HC2 | 3.0" | **521** |
+| HC3 | 4.5" | **554** |
+| HC4 | 6.0" | **592** |
+| HC5 | 7.0" | **617** |
+| HC6 | 7.5" | **629** |
+| HC7 | 9" | **667** |
+| HC8 | 12" | **742** |
 
 HC7 and HC8 are not used by any sorting rule — the classifier saturates at the 7.5"+ band. They
 exist so that oversize material is visible in diagnostics.
 
-**Every threshold must sit inside the live strip, 355–698.** A threshold inside a blanked region
+**Every threshold must sit inside the live window, 448–800.** A threshold inside a blanked region
 can never fire, no matter what object is in the beam. If a channel refuses to trigger, check that
 before suspecting anything else.
 
-**Two gaps are tight.** HC1→HC2 is 12 mm and HC5→HC6 is 13 mm. That second one is the 7.0"/7.5"
-boundary, which separates two different product bins, so it is where a mounting error shows up
-first.
+**Two gaps are tight.** HC1→HC2 is 17 mm and **HC5→HC6 is 12 mm**. That second one is the
+7.0"/7.5" boundary, which separates two different product bins, so it is where a mounting error
+shows up first.
 
-These were measured against a marked belt line rather than the belt itself. **Re-check at least
-the 4.5" and 7.5" blocks against the real belt surface** — if they still read 442 and 517, the
-calibration carried over and nothing more is needed.
+**Outlier check.** Subtract each block's height from its reading to get an implied belt position.
+All eight should agree within a few millimetres. A block turned the wrong way once gave a reading
+20 mm adrift from every other — re-taken flat, it fell into line.
 
 ### Part of the array is blanked out
 
-The grid is 800 mm but only about 14 in of it can see the belt — the rest looks at machine
-structure above and below the opening. Those two regions are **blanked**, so the sensor ignores
-them.
+The grid is 800 mm but only about 14 in of it can see the belt. The rest looks at the belt surface
+and the machine structure below it, which is **blanked** so the sensor ignores it.
 
 | Field | Range | Covers |
 |---|---|---|
-| Blanking Field 1 | `0` – `355` | Below the window, including the belt surface |
-| Blanking Field 2 | `698` – `800` | Above the window |
+| Blanking Field 1 | `10` – `448` | The belt surface and the structure below it |
+| Blanking Field 2 | unused | Mode `Inactive` — a spare |
 
-Both have a **Mode** setting, under Operation Mode Configuration → Blanking Field Configuration,
-and both must be **`Active`**. Like the Height Control channels, the positions do nothing while
-the Mode is Inactive.
+The field has a **Mode** setting, under Operation Mode Configuration → Blanking Field
+Configuration, and it must be **`Active`**. Like the Height Control channels, the positions do
+nothing while the Mode is Inactive.
 
 **Without blanking the machine would not work at all.** The obstructed beams would hold the
 switching signal on permanently and no log would ever be detected.
 
+> **The blanked region must never reach the ends of the array.** The sensor synchronises optically
+> on the **first and last beams**, and if **both** are blocked, synchronisation is lost and it
+> stops measuring altogether. That is why Field 1 starts at 10 rather than 0, and why the array is
+> mounted with both ends in clear air.
+>
+> The symptom is unmistakable once you have seen it: `Synchronization` **Inactive**, all three
+> Measurement Values reading **0 mm**, and `Switching Signal` stuck **Active**. Active with zero
+> positions is not "I see an object" — it is "I see no light at all", and **nothing responds
+> anywhere, including inside the live zone.** No amount of blanking will fix it; the array has to
+> move.
+
 Two consequences worth knowing before they confuse you:
 
 - **A Height Control threshold inside a blanked region can never fire.** It is not a fault in the
-  channel. Check the value is above 355.
-- **`Lowest Object Position` clamps at about 358** — the blanking edge — for every log, because
-  logs rest at 342.8, inside the blanked zone. **`Object Height` is therefore wrong for every
-  log**, running roughly 28 mm short. At 1 in steps that makes each block report about the size of
-  the one below it, which looks exactly like a stale reading and is not. **Use
-  `Highest Object Position` only.**
+  channel. Check the value is above 448.
+- **`Lowest Object Position` clamps at about 450** — the blanking edge — for every log, because
+  logs rest at about 438, inside the blanked zone. **`Object Height` is therefore wrong for every
+  log.** At 1 in steps that makes each block report about the size of the one below it, which
+  looks exactly like a stale reading and is not. **Use `Highest Object Position` only.**
 
-Assume changing **Beam Mode wipes the blanking fields** as well as the thresholds. Set Beam Mode
+Assume changing **Beam Mode wipes the blanking field** as well as the thresholds. Set Beam Mode
 first, then blanking, then thresholds.
 
 ### The array is mounted cable-down
@@ -181,15 +190,18 @@ That is what `Detection Reference` = **`Reference at Cable Side`** does.
 > other and every height reads inverted — a small block reports a *large* position and lights
 > nearly every Height Control bit. If you ever see that, check this parameter before suspecting
 > the calibration.
+>
+> **The factory default is the opposite setting.** Anything that restores defaults — including
+> pressing Download before Upload — will flip it and invert every reading.
 
 Only the receiver carries the setting; the emitter has no configuration. **Both units must be
-mounted the same way up** — with Beam Mode at `Three Beam Crossing`, mirroring one against the
-other breaks the crossing geometry rather than merely offsetting it.
+mounted the same way up, and at the same height** — with Beam Mode at `Three Beam Crossing`,
+mirroring one against the other breaks the crossing geometry rather than merely offsetting it.
 
-**`Lowest Object Position` reads about 8 mm** in this orientation rather than 0. The gap between
-the housing end and the first beam is not the same at both ends. **Do not compensate for it** —
-thresholds are written as measured values against a `reported ≥ Position` trigger, so the offset
-is already included and cancels out.
+**Mounting reference: the printed arrows sit about 1 mm below the top edge of the window
+opening.** That position is what keeps the top sync beam in clear air. It is checkable by eye —
+if you cannot see the arrow through the opening, the array is too high.
+
 
 ### Verifying
 
