@@ -61,7 +61,7 @@ Only after step 4, and **on a single kick** — never a paired one. Procedure in
 [MAINTENANCE.md](MAINTENANCE.md).
 
 - [ ] Single kicks land on the log's centre
-- [ ] A paired kick (6+8 or 12+14) lands correctly on a long log
+- [ ] A paired kick (12+14) lands correctly on a long pole
 
 ## 6. Standalone verification
 
@@ -100,10 +100,10 @@ in production than after.
 - **2.5" and 2.6" material cannot be distinguished.** The threshold currently errs inclusive —
   material from roughly 2.45" up is treated as sortable. The alternative pushes good 2.6"–2.75"
   logs into no-sort. One value changes it. See [OPERATION.md](OPERATION.md)
-- **There is no over-diameter rejection.** Oversize material is sorted as though in range. The
-  sensor measures it, so a rule could be added
-- **Bins 1 and 13 have very narrow length windows** and are verified only in simulation — their
-  beam-break times are shorter than a person can reproduce by hand. Real production logs will
+- **Diameter is taken at the small end**, the thinnest point along the log, ignoring 6 inches at
+  each end. A log with a big butt is sized by its top
+- **The 8-footer and jack windows are narrow.** Each is one foot of length, about 0.27 s of beam
+  time, which is close to the limit of what a person can reproduce by hand. Real production logs
   exercise them properly
 - **Length depends on belt speed being stable.** A belt that slows under load reads logs long
 - **Nothing confirms a log landed in its bin.** A mechanical problem downstream shows up as

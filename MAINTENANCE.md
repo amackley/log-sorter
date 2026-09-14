@@ -109,29 +109,29 @@ condition is `reported ≥ Position`, so the measured value is exactly right. Se
 Keep a set of reference blocks with the machine. **Update this table whenever the values change
 — it is the only backup.**
 
-Current values, measured 2026-09-08 against the real belt:
+Current values on the device, 2026-09-14:
 
 | Channel | Boundary | Position |
 |---|---|---|
 | HC1 | 2.6" | **504** |
 | HC2 | 3.0" | **521** |
-| HC3 | 4.5" | **554** |
-| HC4 | 6.0" | **592** |
-| HC5 | 7.0" | **617** |
-| HC6 | 7.5" | **629** |
-| HC7 | 9" | **667** |
-| HC8 | 12" | **742** |
+| HC3 | 4.0" | **541** *(estimate, to be measured)* |
+| HC4 | 5.0" | **567** *(estimate, to be measured)* |
+| HC5 | 6.0" | **592** |
+| HC6 | 9" | **667** |
+| HC7 | 12" | **742** |
+| HC8 | spare | **742** |
 
-HC7 and HC8 are not used by any sorting rule — the classifier saturates at the 7.5"+ band. They
-exist so that oversize material is visible in diagnostics.
+HC1–HC7 give the seven diameter bands the sorting rules use. The rest were measured against the
+real belt. HC3 and HC4 were interpolated from the neighbouring measurements and should be measured
+with 4" and 5" blocks. HC8 is spare, set equal to HC7.
 
 **Every threshold must sit inside the live window, 448–800.** A threshold inside a blanked region
 can never fire, no matter what object is in the beam. If a channel refuses to trigger, check that
 before suspecting anything else.
 
-**Two gaps are tight.** HC1→HC2 is 17 mm and **HC5→HC6 is 12 mm**. That second one is the
-7.0"/7.5" boundary, which separates two different product bins, so it is where a mounting error
-shows up first.
+**The tightest gap is HC1→HC2, at 17 mm.** That is the 2.6"/3" boundary, so a mounting error
+shows up there first.
 
 **Outlier check.** Subtract each block's height from its reading to get an implied belt position.
 All eight should agree within a few millimetres. A block turned the wrong way once gave a reading
@@ -258,8 +258,8 @@ watch which paddle actually moves. Check:
 - Consecutive pairs (1&2, 3&4, …) move paddles at the **same** station. If not, the odd/even
   convention is reversed and every bin is misplaced.
 - Station distance climbs with the number — 1&2 nearest the sensor, 13&14 furthest.
-- **Kickers 6, 8, 12 and 14 each fire twice** — once on their own number and once as a paired
-  partner. A swap within either pair puts a 20 ft pole on the floor.
+- **Kickers 12 and 14 each fire twice**, once on their own number and once as each other's
+  partner. A swap within that pair puts a long pole on the floor.
 
 > **Never leave an output energised.** Self-test holds the relay on solid, while normal operation
 > pulses it for 300 ms. Set the number, observe, set it back to zero. Solenoid coils are
@@ -280,7 +280,8 @@ every classification wrong.
 3. If it reads consistently long or short by a ratio, correct the belt speed constant by that
    same ratio.
 
-Current value: **3.8295 ft/s**, from timing 88.5 ft in 23.11 s.
+Current value: **3.625 ft/s**, the average of four tape-measured logs (2026-09-14). For each log,
+divide its tape-measured length by how long it held the beam.
 
 **Re-check this if sorting accuracy drifts over a shift.** A belt that slows under load will
 read logs long. Check belt speed before suspecting anything else.
@@ -294,7 +295,7 @@ and the paddle actually striking.
 
 Tune it **after** belt speed is confirmed, and **on a single kick**, never a paired one:
 
-1. Send logs to a single-kick bin (1–5, 7, 9–11, 13).
+1. Send logs to a single-kick bin (1, 3, 5, 7, 8, 9, 10, or 12 for a pole under 13 ft).
 2. Watch where the paddle strikes relative to the log's centre.
 3. If it strikes **behind** centre, increase the lead. It is measured in seconds:
    1 ft early is about `0.26` s.
@@ -302,4 +303,4 @@ Tune it **after** belt speed is confirmed, and **on a single kick**, never a pai
 **How to tell this apart from a belt speed error:** if the miss grows the further down the belt
 you go, it is belt speed. If every station misses by the same amount, it is kick timing.
 
-Only once single kicks land correctly should you test a paired kick (6+8 or 12+14).
+Only once single kicks land correctly should you test the paired kick (12+14), on a long pole.

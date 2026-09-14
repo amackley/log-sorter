@@ -22,50 +22,47 @@ in the bin.** If logs start showing up in the wrong place, the machine will not 
 
 ## The bins
 
+Diameters are **small-end** diameters: the machine uses the thinnest point along the log.
+
 | Bin | What goes there |
 |---|---|
-| **1** | Jacks — 3" to 6" diameter, roughly 6 ft |
-| **2** | **No-sort / scrap** — anything under 2.6" diameter, or shorter than 5.75 ft |
-| **3** | 8 footers, 4.5" to 6" |
-| **4** | 8 footers, 2.6" to 4.5" |
-| **5** | 8 footers, 6" to 7" |
-| **6 + 8** | **Large poles** — over 6", 17 ft and up. *Both paddles fire together* |
-| **7** | 8 footers, over 7" |
-| **9** | 10 footers, 7.5" and up |
-| **10** | **Catch-all** — good log that fits no product category |
-| **11** | 10 footers, 2.6" to 7.5" |
-| **12 + 14** | **21 ft poles** — 2.6" to 6", over 20 ft. *Both paddles fire together* |
-| **13** | 7 footers, 2.6" to 13" |
+| **1** | 8 footers, 3" to 4", 7'6" to 8'6" |
+| **3** | 8 footers, 4" to 5" |
+| **5** | 8 footers, 5" to 6" |
+| **7** | 8 footers, 6" to 9" |
+| **8** | **Large diameter**, 9" to 12", 9'9" to 17'6". *One paddle* |
+| **9** | **No-sort**: anything not listed here |
+| **10** | Jacks, 3" to 6", 5'6" to 6'6" |
+| **12 + 14** | **Poles**, 2.6" to 4", 10' to 22'. *Both paddles fire together from 13 ft* |
+
+Bins 2, 4, 6, 11 and 13 receive nothing.
 
 Full detail, including exactly where the boundaries fall, is in
 [reference/sorting-rules.md](reference/sorting-rules.md).
 
-**Bin 2 is the default.** Anything the rules do not recognise ends up there, which is the safe
-outcome — genuine scrap and anything unexpected both land in the same place rather than being
+**Bin 9 is the default.** Anything the rules do not recognise ends up there, which is the safe
+outcome. Genuine scrap and anything unexpected both land in the same place rather than being
 forced into a product bin.
 
-**Bin 10 is not scrap.** It is good, usable log that does not match a product size — most often
-12 to 17 ft material. It exists so off-cuts get re-cut rather than thrown away.
+### Bin 14 never receives a log on its own
 
-### Bins 8 and 14 never receive a log on their own
-
-They only ever fire as the partner of bin 6 and bin 12. A long pole needs two paddles striking
-together, so the machine aims at the midpoint between the two stations and fires both. If you
-see bin 8 or bin 14 targeted alone, something is wrong.
+It only ever fires as the partner of bin 12. A long pole needs two paddles striking together, so
+the machine aims at the midpoint between the two stations and fires both. Poles under 13 ft are
+too short to reach both paddles, so bin 12 takes them alone. If you see bin 14 targeted alone,
+something is wrong.
 
 ---
 
-## Two things that cannot be distinguished
+## Limits of the measurement
 
 **2.5" and 2.6" material read the same.** They are about a tenth of an inch apart, against an
-optical grid that resolves roughly 0.16". The threshold is currently set to err **inclusive** —
-material from roughly 2.45" up is treated as sortable rather than scrap. The alternative pushes
-good 2.6" to 2.75" logs into the no-sort bin. This is a deliberate choice and can be reversed by
+optical grid that resolves roughly 0.16". The threshold is set to err **inclusive**: material
+from roughly 2.45" up is treated as sortable rather than no-sort. The alternative pushes good
+2.6" to 2.75" logs into the no-sort bin. This is a deliberate choice and can be reversed by
 changing one value.
 
-**There is no over-diameter rejection.** Bin 13's stated 13" upper limit is not enforced
-anywhere. Oversize material will be sorted as though it were in range. The sensor does measure
-it, so a rejection rule could be added if wanted.
+**Oversize material goes to no-sort.** A small end of 12" or more matches no product and lands in
+bin 9, and so does an 8-footer over 9".
 
 ---
 
@@ -79,7 +76,7 @@ indicators for whoever is diagnosing a problem.
 | `xBeamJamFault` | The beam has been blocked longer than 60 seconds | Something is sitting in the light grid. Clear it |
 | `xQueueFullFault` | More logs in flight than the queue can track | Logs are being fed faster than the belt can carry them apart. Slow the feed |
 | `xKickTooLateFault` | A log's centre was already past its station when it was classified | Usually a very long log routed to an early bin. Expected occasionally; a constant stream of them means the belt speed setting is wrong |
-| `xAimClamped` | The aim point had to be pulled back to fit on the belt | The log is too long for the bin it was sent to |
+| `xAimClamped` | The aim point had to be pulled back to fit on the belt | Expected on poles over 21.5 ft. On anything else, the log is too long for the bin it was sent to |
 | `xBinRangeFault` | The classifier produced a bin number outside 1–14 | Should never happen. Report it |
 
 **A fault that latches once and stays on is not necessarily a live problem** — these do not clear

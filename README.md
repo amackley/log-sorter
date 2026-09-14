@@ -49,8 +49,9 @@ Rail order: `750-8001 → 750-400 → 750-1657 → 750-1500 → 750-600`
 
 Station N serves bins 2N−1 and 2N — the two sides of one station, sharing one distance.
 
-**Bins 6+8 and 12+14 fire as pairs** for long logs, aimed at the midpoint between their two
-stations. A single paddle against a 20 ft log would swing through empty air.
+**Bins 12+14 fire as a pair** for poles of 13 ft and longer, aimed at the midpoint between their
+two stations. A single paddle against a 20 ft pole would swing through empty air. Every other bin
+fires alone.
 
 ---
 

@@ -37,7 +37,7 @@ you in the wrong direction.
 | The miss grows the further down the belt | Belt speed |
 | Every station misses by the same amount | Kick timing lead |
 | Paddles firing at an empty belt on a regular cycle | **The simulator is on.** Check both `SimMode` and `Sim_Auto`. `Sim_Auto` injects fabricated logs even when `SimMode` is off |
-| A long pole is dropped on the floor | Both members of a paired kick must fire — 6+8, or 12+14. Check both relays, and check the pair is not swapped |
+| A long pole is dropped on the floor | Both members of the paired kick, 12+14, must fire. Check both relays, and check the pair is not swapped |
 | Sorting accuracy drifts over a shift | Belt slowing under load. Logs read long. Check belt speed before suspecting the program |
 
 ---
