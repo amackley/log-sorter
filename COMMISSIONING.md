@@ -61,7 +61,7 @@ Only after step 4, and **on a single kick** — never a paired one. Procedure in
 [MAINTENANCE.md](MAINTENANCE.md).
 
 - [ ] Single kicks land on the log's centre
-- [ ] A paired kick (12+14) lands correctly on a long pole
+- [ ] Both paired kicks (6+8 and 12+14) land correctly on long logs
 
 ## 6. Standalone verification
 

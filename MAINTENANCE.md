@@ -109,7 +109,7 @@ condition is `reported ≥ Position`, so the measured value is exactly right. Se
 Keep a set of reference blocks with the machine. **Update this table whenever the values change
 — it is the only backup.**
 
-Current values on the device, 2026-09-14:
+Current values on the device, 2026-09-15:
 
 | Channel | Boundary | Position |
 |---|---|---|
@@ -118,13 +118,13 @@ Current values on the device, 2026-09-14:
 | HC3 | 4.0" | **541** *(estimate, to be measured)* |
 | HC4 | 5.0" | **567** *(estimate, to be measured)* |
 | HC5 | 6.0" | **592** |
-| HC6 | 9" | **667** |
-| HC7 | 12" | **742** |
-| HC8 | spare | **742** |
+| HC6 | 7.0" | **617** |
+| HC7 | 9" | **667** |
+| HC8 | 12" | **742** |
 
-HC1–HC7 give the seven diameter bands the sorting rules use. The rest were measured against the
-real belt. HC3 and HC4 were interpolated from the neighbouring measurements and should be measured
-with 4" and 5" blocks. HC8 is spare, set equal to HC7.
+All eight channels are in use, giving the nine diameter bands the sorting rules use. All but two
+were measured against the real belt. HC3 and HC4 were interpolated from the neighbouring
+measurements and should be measured with 4" and 5" blocks.
 
 **Every threshold must sit inside the live window, 448–800.** A threshold inside a blanked region
 can never fire, no matter what object is in the beam. If a channel refuses to trigger, check that
@@ -258,11 +258,11 @@ watch which paddle actually moves. Check:
 - Consecutive pairs (1&2, 3&4, …) move paddles at the **same** station. If not, the odd/even
   convention is reversed and every bin is misplaced.
 - Station distance climbs with the number — 1&2 nearest the sensor, 13&14 furthest.
-- **Kickers 12 and 14 each fire twice**, once on their own number and once as each other's
-  partner. A swap within that pair puts a long pole on the floor.
+- **Kickers 6, 8, 12 and 14 each fire twice**, once on their own number and once as a paired
+  partner. A swap within either pair puts a long log on the floor.
 
 > **Never leave an output energised.** Self-test holds the relay on solid, while normal operation
-> pulses it for 300 ms. Set the number, observe, set it back to zero. Solenoid coils are
+> pulses it for 400 ms. Set the number, observe, set it back to zero. Solenoid coils are
 > generally not rated for continuous duty.
 >
 > While self-test is on, the control program stops its normal cycle. Counters freeze and length
@@ -295,7 +295,7 @@ and the paddle actually striking.
 
 Tune it **after** belt speed is confirmed, and **on a single kick**, never a paired one:
 
-1. Send logs to a single-kick bin (1, 3, 5, 7, 8, 9, 10, or 12 for a pole under 13 ft).
+1. Send logs to a single-kick bin (1, 3, 5, 7, 11, 13, or 6 for a big log under 13 ft).
 2. Watch where the paddle strikes relative to the log's centre.
 3. If it strikes **behind** centre, increase the lead. It is measured in seconds:
    1 ft early is about `0.26` s.
@@ -303,4 +303,5 @@ Tune it **after** belt speed is confirmed, and **on a single kick**, never a pai
 **How to tell this apart from a belt speed error:** if the miss grows the further down the belt
 you go, it is belt speed. If every station misses by the same amount, it is kick timing.
 
-Only once single kicks land correctly should you test the paired kick (12+14), on a long pole.
+Only once single kicks land correctly should you test the paired kicks (6+8 and 12+14), on long
+logs.
